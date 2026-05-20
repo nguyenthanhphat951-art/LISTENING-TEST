@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Practice Test (Test 4)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Tùy chỉnh thanh cuộn cho mượt mà */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+        /* Tùy chỉnh vùng bôi màu câu hỏi */
+        mark.ielts-highlight { border-radius: 2px; cursor: pointer; transition: opacity 0.2s; }
+        mark.ielts-highlight:hover { opacity: 0.8; }
+        
+        .question-target { transition: background-color 0.5s ease; scroll-margin-top: 30px; }
+        .question-target.highlight-scroll { background-color: #f4f4f5; }
+
+        /* Ô nhập liệu dạng gạch chân đặc trưng của IELTS */
+        .blank-underlined {
+            border-bottom: 2px solid #000;
+            background: transparent;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .blank-underlined:focus {
+            border-bottom-color: #2563eb;
+            background-color: #eff6ff;
+        }
+
+        /* Định dạng các nút chọn trắc nghiệm và selector */
+        .mc-opt-btn.active { border-color: #000000 !important; background-color: #f4f4f5 !important; }
+        .mc-opt-btn.active .radio-circle { border-color: #000000 !important; }
+        .mc-opt-btn.active .radio-dot { transform: scale(1) !important; opacity: 1 !important; }
+
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 14px;
+            padding-right: 28px;
+        }
+
+        /* Định dạng hiển thị màu sắc khi đã chấm điểm */
+        .graded-correct { background-color: #f0fdf4 !important; border-color: #22c55e !important; color: #15803d !important; }
+        .graded-correct .radio-circle { border-color: #22c55e !important; }
+        .graded-correct .radio-dot { background-color: #22c55e !important; transform: scale(1) !important; opacity: 1 !important; }
+
+        .graded-wrong { background-color: #fef2f2 !important; border-color: #ef4444 !important; color: #b91c1c !important; }
+        .graded-wrong .radio-circle { border-color: #ef4444 !important; }
+        .graded-wrong .radio-dot { background-color: #ef4444 !important; transform: scale(1) !important; opacity: 1 !important; }
+        .text-line-through { text-decoration: line-through; }
+
+        .input-correct { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #15803d !important; font-weight: bold; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #ef4444 !important; text-decoration: line-through; }
+        
+        .nav-correct { background-color: #22c55e !important; color: white !important; border-color: #16a34a !important; }
+        .nav-wrong { background-color: #ef4444 !important; color: white !important; border-color: #dc2626 !important; }
+    </style>
+</head>
+<body class="bg-white text-zinc-900 overflow-hidden h-screen flex flex-col font-sans select-none">
+
+    <!-- Đối tượng Audio trung tâm để phát âm thanh cục bộ -->
+    <audio id="exam-audio" preload="auto"></audio>
+
+    <!-- HỘP THOẠI BẮT ĐẦU THI (Chọn file âm thanh duy nhất) -->
+    <div id="start-modal" class="fixed inset-0 bg-zinc-950 backdrop-blur-md flex items-center justify-center z-[200] transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-xl border border-zinc-200 w-11/12 max-w-lg shadow-2xl text-center">
+            <div class="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center mx-auto mb-5 shadow-lg">
+                <i class="fa-solid fa-headphones-simple text-2xl animate-pulse"></i>
+            </div>
+            <h2 class="text-xl font-extrabold uppercase tracking-wider mb-2 text-black">IELTS Listening Practice Test 4</h2>
+            <p class="text-xs text-zinc-500 mb-6 leading-relaxed font-medium">
+                Please drag and drop your single, continuous MP3 listening file for Test 4 into the zone below, or click to browse. Once loaded, the test will begin in continuous CD mode without Play/Pause keys.
+            </p>
+            
+            <!-- VÙNG KÉO THẢ FILE -->
+            <div id="audio-drop-zone" class="border-2 border-dashed border-zinc-300 hover:border-black rounded-lg p-8 mb-6 cursor-pointer transition-all bg-zinc-50 flex flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-file-audio text-4xl text-zinc-400" id="audio-drop-icon"></i>
+                <p class="text-xs font-bold text-zinc-700" id="audio-drop-text">Drag & drop your full test audio here, or click to browse</p>
+                <p class="text-[10px] text-zinc-400">Accepts a single continuous .mp3 or .wav file</p>
+                <input type="file" id="local-audio-input" accept="audio/*" class="hidden">
+            </div>
+
+            <button class="bg-zinc-300 text-zinc-500 font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all w-full cursor-not-allowed" id="btn-start-test" disabled>
+                Select Audio File First
+            </button>
+        </div>
+    </div>
+
+    <!-- HEADER CHỨA THỜI GIAN VÀ KHÔNG CÓ NÚT PLAY -->
+    <header class="bg-black text-white px-6 py-4 flex justify-between items-center border-b-2 border-black z-30 select-none shrink-0">
+        <div class="logo-area flex items-center gap-4">
+            <h1 class="text-lg font-bold tracking-widest uppercase">IELTS Listening</h1>
+            <span class="bg-zinc-800 text-zinc-300 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded">Continuous CD Mode</span>
+        </div>
+
+        <!-- Chỉ hiển thị Trạng thái và Thanh Volume đúng quy chuẩn phòng thi máy tính -->
+        <div class="hidden sm:flex items-center gap-4 bg-zinc-950 px-4 py-2 rounded-lg border border-zinc-800 text-xs select-none">
+            <span id="audio-status-label" class="text-zinc-400 font-semibold tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-circle text-[8px] text-zinc-600"></i> No audio loaded
+            </span>
+            <div class="h-4 w-[1px] bg-zinc-800"></div>
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-volume-high text-zinc-400 text-[10px]"></i>
+                <input type="range" id="volume-control" min="0" max="1" step="0.05" value="1" class="w-20 accent-white h-1 bg-zinc-700 rounded-lg cursor-pointer" title="Adjust Volume">
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3 bg-zinc-900 px-4 py-2 rounded border border-zinc-800 font-mono text-base font-bold transition-all" id="countdown-timer">
+                <i class="fa-regular fa-clock text-sm"></i>
+                <span id="timer-display">40:00</span>
+            </div>
+            <button class="bg-white hover:bg-zinc-200 text-black font-bold py-2 px-4 rounded text-xs uppercase tracking-wider transition-colors" id="btn-submit-exam">
+                Submit Test
+            </button>
+        </div>
+    </header>
+
+    <!-- CÁC TAB CHUYỂN PHẦN CÂU HỎI -->
+    <div class="flex bg-zinc-100 border-b border-zinc-200 px-6 gap-1 select-none z-20 shrink-0">
+        <button class="tab-btn active px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="1">Part 1</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="2">Part 2</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="3">Part 3</button>
+        <button class="tab-btn px-6 py-3 text-xs font-bold text-zinc-500 border-b-2 border-transparent uppercase tracking-wider hover:text-black hover:bg-zinc-200 transition-all" data-target="4">Part 4</button>
+    </div>
+
+    <!-- KHÔNG GIAN LÀM BÀI -->
+    <div class="flex flex-1 overflow-hidden relative" id="workspace-container">
+        
+        <!-- BẢNG BÊN TRÁI: HIỂN THỊ CÁC CÂU HỎI -->
+        <div class="w-[80%] h-full overflow-y-auto p-10 bg-white border-r border-zinc-200 relative select-text" id="questions-workspace">
+            
+            <!-- Hướng dẫn tô màu -->
+            <div class="bg-zinc-100 border border-zinc-200 p-3 rounded text-xs text-zinc-700 mb-6 flex items-center gap-2 select-none">
+                <i class="fa-solid fa-circle-info text-black flex-shrink-0"></i>
+                <span><strong>Highlight Tool:</strong> Select any text in the questions area with your mouse to highlight it. Click on the highlighted text to remove it.</span>
+            </div>
+
+            <!-- PART 1 QUESTIONS -->
+            <div id="part-content-1" class="part-content block">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 1</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 1–10</h1>
+                
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-8 select-none">
+                    <p class="text-sm font-semibold">Complete the notes below.</p>
+                    <p class="text-xs text-zinc-600 mt-1">Write <span class="font-bold text-black">ONE WORD AND/OR A NUMBER</span> for each answer.</p>
+                </div>
+
+                <div class="border border-zinc-200 rounded-lg p-8 bg-zinc-50/50 mb-8 font-serif leading-relaxed text-black max-w-3xl mx-auto">
+                    <div class="text-xl font-bold mb-6 text-center text-zinc-800 border-b border-zinc-200 pb-3">Advice on family visit</div>
+
+                    <div class="space-y-6">
+                        <!-- Section 1 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Accommodation</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-1">
+                                    <strong>1</strong> <input type="text" id="blank-q1" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="1"> Hotel on George Street
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-2">
+                                    cost of family room per night: £ <strong>2</strong> <input type="text" id="blank-q2" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="2"> (approx.)
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 2 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Recommended trips</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-3">
+                                    a <strong>3</strong> <input type="text" id="blank-q3" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="3"> tour of the city centre (starts in Carlton Square)
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-4">
+                                    a trip by <strong>4</strong> <input type="text" id="blank-q4" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="4"> to the old fort
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 3 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Science Museum</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-5">
+                                    best day to visit: <strong>5</strong> <input type="text" id="blank-q5" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="5">
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-6">
+                                    see the exhibition about <strong>6</strong> <input type="text" id="blank-q6" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="6"> which opens soon
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 4 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Food</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li>Clacton Market:
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-7">
+                                            good for <strong>7</strong> <input type="text" id="blank-q7" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="7"> food
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-8">
+                                            need to have lunch before <strong>8</strong> <input type="text" id="blank-q8" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="8"> p.m.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 5 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Theatre tickets</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li class="question-target p-1 rounded" id="q-target-9">
+                                    save up to <strong>9</strong> <input type="text" id="blank-q9" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="9"> % on ticket prices at bargaintickets.com
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Section 6 -->
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Free activities</div>
+                            <ul class="list-disc pl-6 space-y-3">
+                                <li>Blakewell Gardens</li>
+                                <li>Roots Music Festival</li>
+                                <li class="question-target p-1 rounded" id="q-target-10">
+                                    climb Telegraph Hill to see a view of the <strong>10</strong> <input type="text" id="blank-q10" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="10">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 2 QUESTIONS -->
+            <div id="part-content-2" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 2</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 11–20</h1>
+                
+                <!-- Q11-12 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 11 and 12</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose <span class="font-bold text-black">TWO</span> letters, <span class="font-bold text-black">A-E</span>.</p>
+                    <p class="text-xs text-zinc-700 mt-1">Which TWO things does the speaker say about visiting the football stadium with children?</p>
+                </div>
+
+                <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm mb-8 max-w-3xl" id="q-target-11_12">
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q11_12" value="A" class="w-4 h-4 accent-black rounded">
+                            <span>A. Children can get their photo taken with a football player.</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q11_12" value="B" class="w-4 h-4 accent-black rounded">
+                            <span>B. There is a competition for children today.</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q11_12" value="C" class="w-4 h-4 accent-black rounded">
+                            <span>C. Parents must stay with their children at all times.</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q11_12" value="D" class="w-4 h-4 accent-black rounded">
+                            <span>D. Children will need sunhats and drinks.</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q11_12" value="E" class="w-4 h-4 accent-black rounded">
+                            <span>E. The café has a special offer on meals for children.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q13-14 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 13 and 14</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose <span class="font-bold text-black">TWO</span> letters, <span class="font-bold text-black">A-E</span>.</p>
+                    <p class="text-xs text-zinc-700 mt-1">Which TWO features of the stadium tour are new this year?</p>
+                </div>
+
+                <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm mb-8 max-w-3xl" id="q-target-13_14">
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q13_14" value="A" class="w-4 h-4 accent-black rounded">
+                            <span>A. VIP tour</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q13_14" value="B" class="w-4 h-4 accent-black rounded">
+                            <span>B. 360 cinema experience</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q13_14" value="C" class="w-4 h-4 accent-black rounded">
+                            <span>C. audio guide</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q13_14" value="D" class="w-4 h-4 accent-black rounded">
+                            <span>D. dressing room tour</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q13_14" value="E" class="w-4 h-4 accent-black rounded">
+                            <span>E. tours in other languages</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q15-20 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 15–20</p>
+                    <p class="text-xs text-zinc-600 mt-1">Which event in the history of football in the UK took place in each of the following years?</p>
+                    <p class="text-xs text-zinc-700 mt-2 font-bold">Choose SIX answers from the box and write the correct letter, A-H, next to Questions 15-20.</p>
+                </div>
+
+                <div class="border border-zinc-200 bg-zinc-50 p-5 rounded-lg mb-8 text-sm space-y-1.5 select-none font-medium max-w-3xl">
+                    <div class="font-bold text-zinc-800 mb-2 uppercase tracking-wider text-xs">Events in the history of football:</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <p><strong>A</strong> the introduction of pay for the players</p>
+                        <p><strong>B</strong> a change to the design of the goal</p>
+                        <p><strong>C</strong> the first use of lights for matches</p>
+                        <p><strong>D</strong> the introduction of goalkeepers</p>
+                        <p><strong>E</strong> the first international match</p>
+                        <p><strong>F</strong> two changes to the rules of the game</p>
+                        <p><strong>G</strong> the introduction of fee for spectators</p>
+                        <p><strong>H</strong> an agreement on the length of a game</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 mb-10 max-w-2xl">
+                    <div class="grid grid-cols-1 gap-3">
+                        <!-- Q15 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-15">
+                            <span class="text-sm font-semibold">15. 1870</span>
+                            <select id="select-q15" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="15">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                        <!-- Q16 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-16">
+                            <span class="text-sm font-semibold">16. 1874</span>
+                            <select id="select-q16" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="16">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                        <!-- Q17 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-17">
+                            <span class="text-sm font-semibold">17. 1875</span>
+                            <select id="select-q17" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="17">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                        <!-- Q18 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-18">
+                            <span class="text-sm font-semibold">18. 1877</span>
+                            <select id="select-q18" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="18">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                        <!-- Q19 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-19">
+                            <span class="text-sm font-semibold">19. 1878</span>
+                            <select id="select-q19" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="19">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                        <!-- Q20 -->
+                        <div class="question-target border border-zinc-200 rounded-lg p-4 bg-white flex justify-between items-center shadow-sm" id="q-target-20">
+                            <span class="text-sm font-semibold">20. 1880</span>
+                            <select id="select-q20" class="custom-select border border-zinc-300 rounded px-3 py-1.5 text-xs font-bold outline-none text-blue-600 focus:border-blue-500 bg-white" data-qnum="20">
+                                <option value="">Select Event</option>
+                                <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+                                <option value="E">E</option><option value="F">F</option><option value="G">G</option><option value="H">H</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 3 QUESTIONS -->
+            <div id="part-content-3" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 3</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 21–30</h1>
+
+                <!-- Q21-22 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 21 and 22</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose <span class="font-bold text-black">TWO</span> letters, <span class="font-bold text-black">A-E</span>.</p>
+                    <p class="text-xs text-zinc-700 mt-1">Which TWO features of the stadium tour are new this year? <span class="italic text-zinc-500">(Topic context: handwriting skills development in children)</span></p>
+                </div>
+
+                <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm mb-8 max-w-3xl" id="q-target-21_22">
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q21_22" value="A" class="w-4 h-4 accent-black rounded">
+                            <span>A. improved fine motor skills</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q21_22" value="B" class="w-4 h-4 accent-black rounded">
+                            <span>B. improved memory</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q21_22" value="C" class="w-4 h-4 accent-black rounded">
+                            <span>C. improved concentration</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q21_22" value="D" class="w-4 h-4 accent-black rounded">
+                            <span>D. improved imagination</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q21_22" value="E" class="w-4 h-4 accent-black rounded">
+                            <span>E. improved spatial awareness</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q23-24 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 23 and 24</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose <span class="font-bold text-black">TWO</span> letters, <span class="font-bold text-black">A-E</span>.</p>
+                    <p class="text-xs text-zinc-700 mt-1">For children with dyspraxia, which TWO problems with handwriting do the students think are easiest to correct?</p>
+                </div>
+
+                <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm mb-8 max-w-3xl" id="q-target-23_24">
+                    <div class="flex flex-col gap-2.5">
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q23_24" value="A" class="w-4 h-4 accent-black rounded">
+                            <span>A. not spacing letters correctly</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q23_24" value="B" class="w-4 h-4 accent-black rounded">
+                            <span>B. not writing in a straight line</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q23_24" value="C" class="w-4 h-4 accent-black rounded">
+                            <span>C. applying too much pressure when writing</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q23_24" value="D" class="w-4 h-4 accent-black rounded">
+                            <span>D. confusing letter shapes</span>
+                        </label>
+                        <label class="flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors cursor-pointer">
+                            <input type="checkbox" name="q23_24" value="E" class="w-4 h-4 accent-black rounded">
+                            <span>E. writing very slowly</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Q25-30 Block -->
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-6 select-none">
+                    <p class="text-sm font-semibold">Questions 25–30</p>
+                    <p class="text-xs text-zinc-600 mt-1">Choose the correct letter, <span class="font-bold text-black">A, B or C</span>.</p>
+                    <p class="text-xs text-zinc-700 mt-1">Teaching handwriting</p>
+                </div>
+
+                <div class="space-y-6 mb-5 max-w-3xl">
+                    <!-- Q25 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-25" data-qnum="25">
+                        <div class="text-sm font-bold mb-3">25. What does the woman say about using laptops to teach writing to children with dyslexia?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q25">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. Children often lack motivation to learn that way.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. Children become fluent relatively quickly.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. Children react more positively if they make a mistake.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q26 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-26" data-qnum="26">
+                        <div class="text-sm font-bold mb-3">26. When discussing whether to teach cursive or print writing, the woman thinks that</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q26">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. cursive writing disadvantages a certain group of children.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. print writing is associated with lower academic performance.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. most teachers in the UK prefer a traditional approach to handwriting.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q27 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-27" data-qnum="27">
+                        <div class="text-sm font-bold mb-3">27. According to the students, what impact does poor handwriting have on exam performance?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q27">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. There is evidence to suggest grades are affected by poor handwriting.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. Neat handwriting is less important now than it used to be.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. Candidates write more slowly and produce shorter answers.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q28 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-28" data-qnum="28">
+                        <div class="text-sm font-bold mb-3">28. What prediction does the man make about the future of handwriting?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q28">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. Touch typing will be taught before writing by hand.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. Children will continue to learn to write by hand.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. People will dislike handwriting on digital devices.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q29 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-29" data-qnum="29">
+                        <div class="text-sm font-bold mb-3">29. The woman is concerned that relying on digital devices has made it difficult for her to</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q29">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. take detailed notes.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. spell and punctuate.</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. read old documents.</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q30 -->
+                    <div class="question-target border border-zinc-200 rounded-lg p-5 hover:border-zinc-400 transition-colors bg-white shadow-sm" id="q-target-30" data-qnum="30">
+                        <div class="text-sm font-bold mb-3">30. How do the students feel about their own handwriting?</div>
+                        <div class="flex flex-col gap-2 mc-options-grid" data-question="q30">
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="A">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>A. concerned they are unable to write quickly</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="B">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>B. embarrassed by comments made about it</span>
+                            </button>
+                            <button type="button" class="mc-opt-btn border border-zinc-300 rounded px-4 py-2.5 text-xs font-semibold hover:bg-zinc-100 transition-colors flex items-center gap-2.5" data-val="C">
+                                <span class="radio-circle w-4 h-4 rounded-full border border-zinc-400 flex items-center justify-center shrink-0"><span class="radio-dot w-2 h-2 rounded-full bg-black scale-0 transition-transform duration-150"></span></span>
+                                <span>C. regretful that they have lost the habit</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PART 4 QUESTIONS -->
+            <div id="part-content-4" class="part-content hidden">
+                <div class="text-xs uppercase font-bold text-zinc-500 mb-2 tracking-wider">Listening Part 4</div>
+                <h1 class="font-serif text-3xl font-bold mb-5 pb-3 border-b-2 border-black">Questions 31–40</h1>
+
+                <div class="bg-zinc-50 border-l-4 border-black p-4 mb-8 select-none">
+                    <p class="text-sm font-semibold">Complete the notes below.</p>
+                    <p class="text-xs text-zinc-600 mt-1">Write <span class="font-bold text-black">ONE WORD ONLY</span> for each answer.</p>
+                </div>
+
+                <div class="border border-zinc-200 rounded-lg p-8 bg-zinc-50/50 mb-5 font-serif leading-relaxed text-black max-w-3xl mx-auto">
+                    <div class="text-2xl font-bold mb-6 text-center text-zinc-800 border-b border-zinc-200 pb-3">Research: Chembe Bird Sanctuary</div>
+
+                    <div class="space-y-6">
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">The importance of birds of prey to the local communities</div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li class="question-target p-1 rounded" id="q-target-31">
+                                    They destroy <strong>31</strong> <input type="text" id="blank-q31" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="31"> and other rodents.
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-32">
+                                    They help to prevent farmers from being bitten by <strong>32</strong> <input type="text" id="blank-q32" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="32">
+                                </li>
+                                <li>They have been an important part of the local culture for many years.</li>
+                                <li class="question-target p-1 rounded" id="q-target-33">
+                                    They now support the economy by encouraging <strong>33</strong> <input type="text" id="blank-q33" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="33"> in the area.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Falling numbers of birds of prey</div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li>The birds may be accidentally killed
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-34">
+                                            by <strong>34</strong> <input type="text" id="blank-q34" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="34"> when they are hunting or sleeping
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-35">
+                                            by electrocution from contact with power lines, especially at times when there is a lot of <strong>35</strong> <input type="text" id="blank-q35" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="35">
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-36">
+                                    Local farmers may illegally shoot them or <strong>36</strong> <input type="text" id="blank-q36" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="36"> them.
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <div class="text-lg font-bold text-zinc-900 mb-3 border-b border-zinc-200 pb-1">Ways of protecting chickens from birds of prey</div>
+                            <ul class="list-disc list-outside pl-6 space-y-3 text-[15px]">
+                                <li>clearing away vegetation from the area (unhelpful)</li>
+                                <li class="question-target p-1 rounded" id="q-target-37">
+                                    providing a <strong>37</strong> <input type="text" id="blank-q37" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="37"> for chickens (expensive)
+                                </li>
+                                <li>frightening birds of prey by
+                                    <ul class="list-circle pl-6 mt-2 space-y-2">
+                                        <li class="question-target p-1 rounded" id="q-target-38">
+                                            keeping a <strong>38</strong> <input type="text" id="blank-q38" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="38">
+                                        </li>
+                                        <li class="question-target p-1 rounded" id="q-target-39">
+                                            making a <strong>39</strong> <input type="text" id="blank-q39" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="39"> – e.g. with metal objects
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="question-target p-1 rounded" id="q-target-40">
+                                    A <strong>40</strong> <input type="text" id="blank-q40" class="blank-underlined font-mono font-bold text-center px-1 w-40 text-blue-600" data-qnum="40"> of methods is usually most effective.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- THANH CHIA KÉO GIÃN KHÔNG GIAN -->
+        <div class="w-1.5 bg-zinc-200 hover:bg-black cursor-col-resize h-full select-none transition-colors duration-150 shrink-0 z-20" id="resize-handle"></div>
+
+        <!-- BẢNG BÊN PHẢI: CHỨA BẢNG ĐIỀU HƯỚNG CÂU HỎI -->
+        <div class="w-[20%] h-full flex flex-col p-6 bg-zinc-50 select-none overflow-y-auto shrink-0" id="sidebar-panel">
+            <div class="flex flex-col h-full justify-between">
+                <div>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-zinc-700 mb-4 flex items-center gap-1.5 border-b border-zinc-200 pb-2">
+                        <i class="fa-solid fa-list-ol"></i> Navigation
+                    </h3>
+                    <div class="grid grid-cols-4 gap-2" id="nav-grid-container">
+                        <script>
+                            for(let i=1; i<=40; i++) {
+                                document.write(`
+                                    <button id="nav-btn-q${i}" class="nav-btn h-9 rounded border border-zinc-300 bg-white text-zinc-800 text-[11px] font-bold hover:bg-zinc-100 transition-colors flex items-center justify-center cursor-pointer" onclick="scrollToQuestion(${i})">
+                                        ${i}
+                                    </button>
+                                `);
+                            }
+                        </script>
+                    </div>
+                </div>
+
+                <!-- Footer chứa thông số kỹ thuật tối giản -->
+                <div class="border-t border-zinc-200 pt-4 mt-6 text-[10px] text-zinc-400 font-medium">
+                    <p class="uppercase tracking-wider">Exam System Status:</p>
+                    <p class="mt-1 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-500 inline-block animate-pulse"></span> Local File CD Mode</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION SUBMIT MODAL (Tránh dùng confirm() của trình duyệt) -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-[150] select-none">
+        <div class="bg-white p-6 rounded-xl border border-zinc-200 w-11/12 max-w-md shadow-2xl text-center">
+            <div class="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-zinc-900 mb-2">Submit Exam?</h3>
+            <p class="text-xs text-zinc-500 mb-6 leading-relaxed">
+                Are you sure you want to finish your listening test? This action is permanent and you cannot change any answers once graded.
+            </p>
+            <div class="flex gap-3 justify-center">
+                <button id="confirm-cancel-btn" class="border border-zinc-300 text-zinc-700 font-bold py-2.5 px-6 rounded-lg text-xs hover:bg-zinc-50 transition-all uppercase tracking-wide">
+                    Cancel
+                </button>
+                <button id="confirm-submit-btn" class="bg-black hover:bg-zinc-800 text-white font-bold py-2.5 px-6 rounded-lg text-xs transition-all uppercase tracking-wide">
+                    Submit & Grade
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BẢNG ĐIỂM / MODAL BÁO CÁO KẾT QUẢ -->
+    <div id="score-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-50 select-none">
+        <div class="bg-white p-10 rounded-xl border border-zinc-200 w-11/12 max-w-sm text-center shadow-2xl transform scale-95 transition-transform duration-300" id="score-modal-content">
+            <div class="w-32 h-32 rounded-full bg-black text-white flex flex-col items-center justify-center mx-auto mb-6 border-4 border-white shadow-xl relative">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-300 absolute top-4">Band</div>
+                <div class="text-5xl font-extrabold mt-2 tracking-tighter" id="modal-band-score">0.0</div>
+            </div>
+            <h2 class="text-xl font-extrabold uppercase tracking-widest mb-1 text-black">Test Complete</h2>
+            <div class="text-base font-bold text-zinc-800 mb-4 bg-zinc-100 py-2 rounded">Raw Score: <span id="modal-score" class="text-black">0/40</span></div>
+            <p class="text-[13px] text-zinc-500 mb-8 leading-relaxed font-medium">Your IELTS Listening Practice exam has been graded. Close this dialog to review your answers on the page.</p>
+            <button class="bg-black hover:bg-zinc-800 text-white font-bold py-3.5 px-8 text-xs uppercase tracking-wider rounded w-full transition-colors cursor-pointer shadow-md" id="modal-close-btn">Review Answers</button>
+        </div>
+    </div>
+
+    <!-- THANH MENU LỰA CHỌN MÀU BÔI ĐEN -->
+    <div id="highlight-menu" class="fixed hidden bg-black rounded py-1.5 px-3 shadow-lg z-[100] items-center gap-2.5 border border-zinc-800 select-none">
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#86efac] bg-[#bbf7d0] cursor-pointer hover:scale-110 transition-transform" data-color="#bbf7d0" title="Highlight Green"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#f9a8d4] bg-[#fbcfe8] cursor-pointer hover:scale-110 transition-transform" data-color="#fbcfe8" title="Highlight Pink"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#93c5fd] bg-[#bfdbfe] cursor-pointer hover:scale-110 transition-transform" data-color="#bfdbfe" title="Highlight Blue"></button>
+        <button class="hl-color-btn w-6 h-6 rounded-full border-2 border-[#fde047] bg-[#fef08a] cursor-pointer hover:scale-110 transition-transform" data-color="#fef08a" title="Highlight Yellow"></button>
+        <div class="w-[1px] h-4 bg-zinc-700 mx-0.5"></div>
+        <button id="btn-clear-selection" class="text-white hover:text-red-400 transition-colors" title="Delete Highlight"><i class="fa-regular fa-trash-can text-xs"></i></button>
+    </div>
+
+    <!-- KỊCH BẢN ĐIỀU KHIỂN CHÍNH -->
+    <script>
+        // Đáp án chuẩn của Đề thi Test 4 (Hỗ trợ viết tắt, nhiều dạng và sửa lỗi chính tả phụ)
+        const KEY_ANSWERS = {
+            q1: ["kings", "king's"],
+            q2: ["125", "one hundred and twenty-five", "one hundred twenty-five"],
+            q3: "walking",
+            q4: "boat",
+            q5: "tuesday",
+            q6: "space",
+            q7: ["vegetarian", "vegerarian"], // Hỗ trợ lỗi đánh máy trong sách gốc của học viên
+            q8: ["2.30", "two thirty", "2:30", "2.30pm", "2:30pm"],
+            q9: ["75", "seventy-five", "75%"],
+            q10: "port",
+            q11_12: ["B", "C"],
+            q13_14: ["A", "C"],
+            q15: "D",
+            q16: "F",
+            q17: "B",
+            q18: "H",
+            q19: "C",
+            q20: "G",
+            q21_22: ["C", "E"],
+            q23_24: ["A", "C"],
+            q25: "C",
+            q26: "A",
+            q27: "A",
+            q28: "B",
+            q29: "B",
+            q30: "C",
+            q31: "rats",
+            q32: "snakes",
+            q33: "tourism",
+            q34: "traffic",
+            q35: "rain",
+            q36: "poison",
+            q37: "building",
+            q38: "dog",
+            q39: "noise",
+            q40: "combination"
+        };
+
+        const USER_ANSWERS = {};
+        let isTimerRunning = false;
+        let timerSeconds = 40 * 60; // 40 phút thi IELTS Listening
+        let timerInterval = null;
+        let hasGraded = false;
+
+        const audio = document.getElementById('exam-audio');
+        const audioStatusLabel = document.getElementById('audio-status-label');
+        const questionsWorkspace = document.getElementById('questions-workspace');
+        
+        // Điều hướng kéo thả file âm thanh cục bộ
+        const dropZone = document.getElementById('audio-drop-zone');
+        const localAudioInput = document.getElementById('local-audio-input');
+        const btnStartTest = document.getElementById('btn-start-test');
+        const dropIcon = document.getElementById('audio-drop-icon');
+        const dropText = document.getElementById('audio-drop-text');
+
+        // Sự kiện tương tác nạp file
+        dropZone.addEventListener('click', () => {
+            localAudioInput.click();
+        });
+
+        localAudioInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleAudioFile(e.target.files[0]);
+            }
+        });
+
+        // Ngăn trình duyệt mở file tự động khi kéo thả
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('border-black', 'bg-zinc-100');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('border-black', 'bg-zinc-100');
+            }, false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length > 0) {
+                handleAudioFile(files[0]);
+            }
+        });
+
+        function handleAudioFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                showModalError('Invalid Format', 'Please upload a valid audio file (such as .mp3 or .wav)!');
+                return;
+            }
+            
+            try {
+                const objectURL = URL.createObjectURL(file);
+                audio.src = objectURL;
+                
+                dropZone.classList.remove('border-zinc-300');
+                dropZone.classList.add('border-green-500', 'bg-green-50/50');
+                dropIcon.className = "fa-solid fa-circle-check text-4xl text-green-500 animate-bounce";
+                dropText.innerHTML = `Loaded: <strong class="text-green-800">${file.name}</strong>`;
+                
+                btnStartTest.disabled = false;
+                btnStartTest.className = "bg-black hover:bg-zinc-800 text-white font-bold py-4 px-10 text-xs uppercase tracking-widest rounded-lg transition-all cursor-pointer shadow-md w-full animate-pulse";
+                btnStartTest.textContent = "Start Test Now";
+                
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-headphones text-green-500"></i> Loaded Offline`;
+            } catch (err) {
+                console.error("Audio Load Error:", err);
+                showModalError('Error', 'Unable to load this audio file. Please try a different one.');
+            }
+        }
+
+        // BẮT ĐẦU THI
+        btnStartTest.addEventListener('click', () => {
+            document.getElementById('start-modal').classList.add('opacity-0', 'pointer-events-none');
+            
+            // Tự động phát âm thanh liên tục
+            audio.play().then(() => {
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-circle-play text-green-500 animate-ping"></i> Playing continuously...`;
+            }).catch(err => {
+                console.error("Autoplay blocked:", err);
+                audioStatusLabel.innerHTML = `<i class="fa-solid fa-volume-xmark text-red-500"></i> Audio playing. Turn up system volume.`;
+            });
+            
+            startTimer();
+        });
+
+        // ĐIỀU CHỈNH ÂM LƯỢNG (Volume)
+        const volumeControl = document.getElementById('volume-control');
+        volumeControl.addEventListener('input', (e) => {
+            audio.volume = e.target.value;
+        });
+
+        // ĐIỀU HƯỚNG TAB TRÁI/PHẢI
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const partNum = this.getAttribute('data-target');
+                switchTab(partNum);
+            });
+        });
+
+        function switchTab(partNum) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active', 'border-black', 'text-black');
+                b.classList.add('text-zinc-500', 'border-transparent');
+                if (b.getAttribute('data-target') === partNum.toString()) {
+                    b.classList.add('active', 'border-black', 'text-black');
+                }
+            });
+
+            document.querySelectorAll('.part-content').forEach(cont => {
+                cont.classList.add('hidden');
+                cont.classList.remove('block');
+            });
+            document.getElementById(`part-content-${partNum}`).classList.remove('hidden');
+            document.getElementById(`part-content-${partNum}`).classList.add('block');
+        }
+
+        // CUỘN TỚI VỊ TRÍ CÂU HỎI KHI BẤM SIDEBAR NAVIGATION
+        function scrollToQuestion(qNum) {
+            let partTarget = 1;
+            if (qNum >= 11 && qNum <= 20) partTarget = 2;
+            else if (qNum >= 21 && qNum <= 30) partTarget = 3;
+            else if (qNum >= 31 && qNum <= 40) partTarget = 4;
+
+            switchTab(partTarget);
+
+            let targetEl = null;
+            if (qNum >= 1 && qNum <= 10) {
+                targetEl = document.getElementById(`blank-q${qNum}`);
+            } else if (qNum === 11 || qNum === 12) {
+                targetEl = document.getElementById(`q-target-11_12`);
+            } else if (qNum === 13 || qNum === 14) {
+                targetEl = document.getElementById(`q-target-13_14`);
+            } else if (qNum >= 15 && qNum <= 20) {
+                targetEl = document.getElementById(`select-q${qNum}`);
+            } else if (qNum === 21 || qNum === 22) {
+                targetEl = document.getElementById(`q-target-21_22`);
+            } else if (qNum === 23 || qNum === 24) {
+                targetEl = document.getElementById(`q-target-23_24`);
+            } else if (qNum >= 25 && qNum <= 30) {
+                targetEl = document.getElementById(`q-target-${qNum}`);
+            } else if (qNum >= 31 && qNum <= 40) {
+                targetEl = document.getElementById(`blank-q${qNum}`);
+            }
+
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                targetEl.classList.add('highlight-scroll');
+                setTimeout(() => {
+                    targetEl.classList.remove('highlight-scroll');
+                }, 1000);
+
+                if (targetEl.tagName === 'INPUT' || targetEl.tagName === 'SELECT') {
+                    setTimeout(() => targetEl.focus(), 300);
+                }
+            }
+        }
+
+        // BỘ ĐẾM THỜI GIAN NGƯỢC
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerSeconds = 0;
+                    gradeTest();
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const s = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').textContent = `${m}:${s}`;
+            
+            if (timerSeconds < 120) {
+                document.getElementById('countdown-timer').classList.add('bg-red-950', 'text-red-500', 'border-red-800');
+            }
+        }
+
+        // LƯU TRẠNG THÁI NHẬP CÂU TRẢ LỜI ĐIỀN KHUYẾT
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('input', function() {
+                const qNum = this.getAttribute('data-qnum');
+                const val = this.value.trim();
+                USER_ANSWERS[`q${qNum}`] = val;
+                updateNavStatus(qNum, val !== '');
+            });
+        });
+
+        // LƯU TRẠNG THÁI CHỌN DROPDOWN MATCHING
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                const qNum = this.getAttribute('data-qnum');
+                const val = this.value;
+                USER_ANSWERS[`q${qNum}`] = val;
+                updateNavStatus(qNum, val !== '');
+            });
+        });
+
+        // LỰA CHỌN TRẮC NGHIỆM ĐƠN (MULTIPLE CHOICE)
+        document.querySelectorAll('.mc-options-grid').forEach(grid => {
+            const qKey = grid.getAttribute('data-question');
+            const qNum = qKey.replace('q', '');
+            const buttons = grid.querySelectorAll('.mc-opt-btn');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (hasGraded) return;
+                    buttons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const val = this.getAttribute('data-val');
+                    USER_ANSWERS[qKey] = val;
+                    updateNavStatus(qNum, true);
+                });
+            });
+        });
+
+        // QUẢN LÝ Ô CHECKBOX CHỌN NHIỀU ĐÁP ÁN (GIỚI HẠN TỐI ĐA 2)
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (hasGraded) return;
+                const groupName = this.name; // q11_12
+                const group = groupName.replace('q', ''); // 11_12
+                const [first, second] = group.split('_').map(Number);
+                
+                const checked = document.querySelectorAll(`input[name="${groupName}"]:checked`);
+                if (checked.length > 2) {
+                    this.checked = false;
+                    showModalError("Selection Limit", "You can only select up to 2 options.");
+                    return;
+                }
+                
+                const vals = Array.from(checked).map(c => c.value);
+                USER_ANSWERS[`q${group}`] = vals;
+                
+                updateNavStatus(first, vals.length >= 1);
+                updateNavStatus(second, vals.length >= 2);
+            });
+        });
+
+        function updateNavStatus(qNum, hasVal) {
+            const btn = document.getElementById(`nav-btn-q${qNum}`);
+            if (btn) {
+                if (hasVal) {
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+                    btn.classList.remove('bg-white', 'text-zinc-800', 'border-zinc-300');
+                } else {
+                    btn.classList.remove('bg-black', 'text-white', 'border-black');
+                    btn.classList.add('bg-white', 'text-zinc-800', 'border-zinc-300');
+                }
+            }
+        }
+
+        // HÀM CHẤM ĐIỂM HOÀN CHỈNH CHO TEST 4
+        function gradeTest() {
+            if (hasGraded) return;
+            hasGraded = true;
+            isTimerRunning = false;
+            clearInterval(timerInterval);
+            audio.pause();
+            audioStatusLabel.innerHTML = `<i class="fa-solid fa-lock text-zinc-500"></i> Locked`;
+
+            document.getElementById('btn-submit-exam').disabled = true;
+            document.getElementById('btn-submit-exam').classList.add('opacity-50', 'cursor-not-allowed');
+
+            let score = 0;
+
+            // 1. Chấm điểm các câu điền khuyết và dropdown trắc nghiệm đơn thường
+            for (let i = 1; i <= 40; i++) {
+                // Bỏ qua các chỉ số của câu hỏi multi-select
+                if ([11, 12, 13, 14, 21, 22, 23, 24].includes(i)) continue;
+
+                const qKey = `q${i}`;
+                const userAns = (USER_ANSWERS[qKey] || "").trim().toLowerCase();
+                const targetAns = KEY_ANSWERS[qKey];
+
+                let isCorrect = false;
+
+                if (Array.isArray(targetAns)) {
+                    isCorrect = targetAns.map(ans => ans.toLowerCase().trim()).includes(userAns);
+                } else {
+                    isCorrect = userAns === targetAns.toLowerCase().trim();
+                }
+
+                if (isCorrect) score++;
+
+                const navBtn = document.getElementById(`nav-btn-q${i}`);
+                if (navBtn) {
+                    navBtn.className = `nav-btn h-9 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer select-none transition-colors ${isCorrect ? 'nav-correct' : 'nav-wrong'}`;
+                }
+
+                const isInput = (i >= 1 && i <= 10) || (i >= 31 && i <= 40);
+                const isSelect = (i >= 15 && i <= 20);
+                const isRadio = (i >= 25 && i <= 30);
+
+                if (isInput) {
+                    const input = document.getElementById(`blank-q${i}`);
+                    if (input) {
+                        input.disabled = true;
+                        if (isCorrect) {
+                            input.className = "blank-underlined font-mono font-bold text-center px-1 w-40 text-green-700 bg-green-50 border-bottom-2 border-green-600";
+                        } else {
+                            input.className = "blank-underlined font-mono font-bold text-center px-1 w-40 text-red-600 bg-red-50 border-bottom-2 border-red-500 text-line-through";
+                            
+                            const corrSpan = document.createElement('span');
+                            corrSpan.className = 'ml-1.5 inline-block text-[11px] text-green-700 font-sans font-bold bg-green-100 border border-green-300 rounded px-1.5 py-0.5 select-all';
+                            corrSpan.textContent = Array.isArray(targetAns) ? targetAns.join(' / ') : targetAns;
+                            input.parentNode.appendChild(corrSpan);
+                        }
+                    }
+                } else if (isSelect) {
+                    const select = document.getElementById(`select-q${i}`);
+                    if (select) {
+                        select.disabled = true;
+                        if (isCorrect) {
+                            select.className = "custom-select border border-green-500 rounded px-3 py-1.5 text-xs font-bold outline-none bg-green-50 text-green-700";
+                        } else {
+                            select.className = "custom-select border border-red-500 rounded px-3 py-1.5 text-xs font-bold outline-none bg-red-50 text-red-600 text-line-through";
+                            
+                            const corrSpan = document.createElement('span');
+                            corrSpan.className = 'ml-1.5 inline-block text-[11px] text-green-700 font-sans font-bold bg-green-100 border border-green-300 rounded px-1.5 py-0.5';
+                            corrSpan.textContent = `Correct: ${targetAns}`;
+                            select.parentNode.appendChild(corrSpan);
+                        }
+                    }
+                } else if (isRadio) {
+                    const targetCard = document.getElementById(`q-target-${i}`);
+                    if (targetCard) {
+                        const buttons = targetCard.querySelectorAll('.mc-opt-btn');
+                        buttons.forEach(btn => {
+                            btn.disabled = true;
+                            const btnVal = btn.getAttribute('data-val');
+                            if (btnVal === targetAns) {
+                                btn.classList.add('graded-correct');
+                            } else if (btnVal === USER_ANSWERS[qKey]) {
+                                btn.classList.add('graded-wrong');
+                            } else {
+                                btn.classList.add('opacity-50');
+                            }
+                        });
+                    }
+                }
+            }
+
+            // 2. Chấm điểm các nhóm câu hỏi Chọn 2 Đáp Án (Multiselect Checkboxes)
+            score += gradeGroupMultiselect("11_12", 11, 12, KEY_ANSWERS.q11_12);
+            score += gradeGroupMultiselect("13_14", 13, 14, KEY_ANSWERS.q13_14);
+            score += gradeGroupMultiselect("21_22", 21, 22, KEY_ANSWERS.q21_22);
+            score += gradeGroupMultiselect("23_24", 23, 24, KEY_ANSWERS.q23_24);
+
+            // Hiển thị Band Score
+            document.getElementById('modal-score').textContent = `${score}/40`;
+            document.getElementById('modal-band-score').textContent = calculateBandScore(score);
+            document.getElementById('score-modal').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('score-modal-content').classList.remove('scale-95');
+        }
+
+        // HÀM CHẤM ĐIỂM NHÓM CHỌN 2 ĐÁP ÁN (Cực kỳ chính xác và hiển thị trực quan)
+        function gradeGroupMultiselect(groupKey, firstQ, secondQ, correctSet) {
+            const userSet = USER_ANSWERS[`q${groupKey}`] || [];
+            const correctSelections = userSet.filter(v => correctSet.includes(v));
+            
+            let firstCorrect = false;
+            let secondCorrect = false;
+            let earnedPoints = 0;
+
+            if (correctSelections.length === 2) {
+                firstCorrect = true;
+                secondCorrect = true;
+                earnedPoints = 2;
+            } else if (correctSelections.length === 1) {
+                firstCorrect = true;
+                earnedPoints = 1;
+            }
+
+            // Đánh dấu màu sắc phản hồi trực quan trên các Checkbox
+            const container = document.getElementById(`q-target-${groupKey}`);
+            if (container) {
+                const labels = container.querySelectorAll('label');
+                labels.forEach(label => {
+                    const input = label.querySelector('input');
+                    input.disabled = true;
+                    const val = input.value;
+                    if (correctSet.includes(val)) {
+                        label.className = "flex items-center gap-3 border border-green-500 bg-green-50 text-green-700 rounded px-4 py-2.5 text-xs font-semibold";
+                    } else if (input.checked) {
+                        label.className = "flex items-center gap-3 border border-red-500 bg-red-50 text-red-700 rounded px-4 py-2.5 text-xs font-semibold text-line-through";
+                    } else {
+                        label.className = "flex items-center gap-3 border border-zinc-200 rounded px-4 py-2.5 text-xs font-semibold opacity-50";
+                    }
+                });
+            }
+
+            // Gán phản hồi trực quan lên nút điều hướng
+            const btn1 = document.getElementById(`nav-btn-q${firstQ}`);
+            const btn2 = document.getElementById(`nav-btn-q${secondQ}`);
+            if (btn1) btn1.className = `nav-btn h-9 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer select-none transition-colors ${firstCorrect ? 'nav-correct' : 'nav-wrong'}`;
+            if (btn2) btn2.className = `nav-btn h-9 rounded text-[11px] font-bold flex items-center justify-center cursor-pointer select-none transition-colors ${secondCorrect ? 'nav-correct' : 'nav-wrong'}`;
+
+            return earnedPoints;
+        }
+
+        function calculateBandScore(score) {
+            if (score >= 39) return "9.0";
+            if (score >= 37) return "8.5";
+            if (score >= 35) return "8.0";
+            if (score >= 32) return "7.5";
+            if (score >= 30) return "7.0";
+            if (score >= 26) return "6.5";
+            if (score >= 23) return "6.0";
+            if (score >= 20) return "5.5";
+            if (score >= 16) return "5.0";
+            if (score >= 13) return "4.5";
+            if (score >= 10) return "4.0";
+            if (score >= 6) return "3.5";
+            if (score >= 4) return "3.0";
+            return "2.5";
+        }
+
+        document.getElementById('modal-close-btn').addEventListener('click', () => {
+            document.getElementById('score-modal').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('score-modal-content').classList.add('scale-95');
+        });
+
+        // HỆ THỐNG HIGHLIGHT VĂN BẢN
+        const highlightMenu = document.getElementById('highlight-menu');
+        
+        document.addEventListener('mouseup', (e) => {
+            if (!questionsWorkspace.contains(e.target)) return;
+            setTimeout(() => {
+                const selection = window.getSelection();
+                if (selection.isCollapsed || selection.toString().trim() === "") {
+                    highlightMenu.style.display = 'none'; return;
+                }
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
+                highlightMenu.style.left = `${Math.max(10, rect.left + (rect.width / 2) - 65)}px`;
+                highlightMenu.style.top = `${Math.max(10, rect.top - 48)}px`;
+                highlightMenu.style.display = 'flex';
+            }, 10);
+        });
+
+        questionsWorkspace.addEventListener('scroll', () => highlightMenu.style.display = 'none');
+
+        document.querySelectorAll('.hl-color-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const color = this.getAttribute('data-color');
+                const selection = window.getSelection();
+                if (!selection.rangeCount || selection.toString().trim() === "") return;
+                
+                const range = selection.getRangeAt(0);
+                const mark = document.createElement('mark');
+                mark.className = 'ielts-highlight'; 
+                mark.style.backgroundColor = color;
+                
+                mark.addEventListener('click', function(e) { 
+                    e.stopPropagation(); 
+                    this.replaceWith(...this.childNodes); 
+                });
+                
+                try { 
+                    range.surroundContents(mark); 
+                } catch (err) { 
+                    const frag = range.extractContents(); 
+                    mark.appendChild(frag); 
+                    range.insertNode(mark); 
+                }
+                selection.removeAllRanges(); 
+                highlightMenu.style.display = 'none';
+            });
+        });
+
+        document.getElementById('btn-clear-selection').addEventListener('click', e => {
+            e.stopPropagation();
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            const parent = range.commonAncestorContainer;
+            const marks = (parent.nodeType === 1 ? parent : parent.parentNode).querySelectorAll('mark.ielts-highlight');
+            marks.forEach(mark => { 
+                if (selection.containsNode(mark, true)) mark.replaceWith(...mark.childNodes); 
+            });
+            selection.removeAllRanges(); 
+            highlightMenu.style.display = 'none';
+        });
+
+        document.addEventListener('mousedown', e => { 
+            if (!highlightMenu.contains(e.target) && e.target.nodeName !== 'MARK') highlightMenu.style.display = 'none'; 
+        });
+
+        // BỘ CO GIÃN PHÂN VÙNG GIAO DIỆN
+        const resizeHandle = document.getElementById('resize-handle');
+        const sidebarPanel = document.getElementById('sidebar-panel');
+        const workspaceContainer = document.getElementById('workspace-container');
+        let isResizing = false;
+
+        function startResize(e) { 
+            isResizing = true; 
+            resizeHandle.classList.add('bg-black'); 
+            document.body.style.cursor = 'col-resize'; 
+            document.body.style.userSelect = 'none'; 
+        }
+        function onResize(e) {
+            if (!isResizing) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const rect = workspaceContainer.getBoundingClientRect();
+            let newWidthPercent = ((clientX - rect.left) / rect.width) * 100;
+            
+            newWidthPercent = Math.min(Math.max(newWidthPercent, 60), 90);
+            questionsWorkspace.style.width = `${newWidthPercent}%`;
+            sidebarPanel.style.width = `${100 - newWidthPercent}%`;
+        }
+        function stopResize() { 
+            if (isResizing) { 
+                isResizing = false; 
+                resizeHandle.classList.remove('bg-black'); 
+                document.body.style.cursor = ''; 
+                document.body.style.userSelect = ''; 
+            } 
+        }
+
+        resizeHandle.addEventListener('mousedown', startResize); 
+        document.addEventListener('mousemove', onResize); 
+        document.addEventListener('mouseup', stopResize);
+        resizeHandle.addEventListener('touchstart', startResize); 
+        document.addEventListener('touchmove', onResize); 
+        document.addEventListener('touchend', stopResize);
+
+        // BỘ CẢNH BÁO LỖI TÙY CHỈNH
+        function showModalError(title, msg) {
+            const errDiv = document.createElement('div');
+            errDiv.className = "fixed inset-0 bg-black/80 flex items-center justify-center z-[300] p-4";
+            errDiv.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-2xl">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl mb-3"></i>
+                    <h3 class="font-bold text-lg text-zinc-900 mb-1">${title}</h3>
+                    <p class="text-xs text-zinc-500 mb-5">${msg}</p>
+                    <button class="bg-black hover:bg-zinc-800 text-white font-bold py-2 px-6 rounded text-xs uppercase cursor-pointer" onclick="this.parentElement.parentElement.remove()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(errDiv);
+        }
+
+        // Hộp thoại tùy chỉnh xác nhận Nộp bài
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+        const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
+
+        document.getElementById('btn-submit-exam').addEventListener('click', () => {
+            confirmModal.classList.remove('opacity-0', 'pointer-events-none');
+        });
+
+        confirmCancelBtn.addEventListener('click', () => {
+            confirmModal.classList.add('opacity-0', 'pointer-events-none');
+        });
+
+        confirmSubmitBtn.addEventListener('click', () => {
+            confirmModal.classList.add('opacity-0', 'pointer-events-none');
+            gradeTest();
+        });
+    </script>
+</body>
+</html>
